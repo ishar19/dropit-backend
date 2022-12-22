@@ -150,4 +150,28 @@ router.post('/whitelist', async(req, res)=>{
 })
 
 
+router.post('/updatePassword', async(req, res)=>{
+    const inputUsername = req.body.username;
+    const password = req.body.password;
+    const docRef = doc(db, "users", inputUsername);
+    const docSnap = await getDoc(docRef);
+    const salt = bcrypt.genSaltSync(saltRounds);
+    const hash = await bcrypt.hash(password, salt)
+    if (docSnap.exists()) {
+        const data = docSnap.data()
+        if (result) {
+            await updateDoc(docRef, {
+                password:hash
+            },{merge:true})
+            res.sendStatus(200)
+        }
+        else {
+            res.sendStatus(403)
+        }
+
+    } else {
+        res.sendStatus(404)
+    }
+})
+
 export default router

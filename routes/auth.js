@@ -52,18 +52,39 @@
 import * as dotenv from 'dotenv' // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
 dotenv.config()
 import sgMail from '@sendgrid/mail'
-console.log(process.env.SENDGRID_API_KEY)
 sgMail.setApiKey("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"); 
 
 
-const user_email = "isharjain19@gmail.com"
+const user_email = "bhavya.giri44@gmail.com"
+// const msg = {
+//     to: user_email,
+//     from: 'isharjain19@gmail.com',
+//     subject: 'Verification mail',
+//     text: 'and easy to do anywhere, even with Node.js',
+//     html:
+//         `<p>Example<p>`,
+// };
+
 const msg = {
-    to: user_email,
-    from: 'your_product_email@example.com',
-    subject: 'Verification mail',
+    to: 'lordcero7@gmail.com', // Change to your recipient
+    from: 'isharjain19@gmail.com', // Change to your verified sender
+    subject: 'Sending with SendGrid is Fun',
     text: 'and easy to do anywhere, even with Node.js',
-    html:
-        `<p>Example<p>`,
-};
-sgMail.send(msg);
+    html: '<strong>and easy to do anywhere, even with Node.js</strong>',
+}
+
+sgMail
+    .send(msg)
+    .then((response) => {
+        console.log(response[0].statusCode)
+        console.log(response[0].headers)
+    })
+    .catch((error) => {
+        console.error(error)
+    })
+ await sgMail.send(msg).then((res)=>{
+    console.log(res)
+}).catch((e)=>{
+    console.log(e)
+});
 
