@@ -1,7 +1,6 @@
 import express from 'express';
 import firebaseApp from './firebaseconfig.js'
 import body_Parser from 'body-parser'
-import { auth } from 'express-openid-connect';
 
 const app = express();
 const PORT = 5000
@@ -17,17 +16,11 @@ app.use(function (req, res, next) {
     next();
 });
 
-const config = {
-    authRequired: false,
-    auth0Logout: true,
-    secret: 'a long, randomly-generated string stored in env',
-    baseURL: 'http://localhost:5000',
-    clientID: 'BIOuZdKDSc3GLnmaz2YFVrSvibTbli4m',
-    issuerBaseURL: 'https://dev-20go4hcq.us.auth0.com'
-};
+
 
 import users from './routes/users.js'
 import uploads from './routes/uploads.js'
+import view from './routes/view.js'
 
 
 
@@ -35,11 +28,11 @@ import uploads from './routes/uploads.js'
 
 app.use('/users',users)
 app.use('/uploads',uploads)
-app.use(auth(config));
+app.use('/view', view)
 
-app.get('/', (req, res) => {
-    res.send(req.oidc.isAuthenticated() ? 'Logged in' : 'Logged out');
-});
+app.get('/',async(req,res)=>{
+    res.send("Hello world")
+})
 
 
 
