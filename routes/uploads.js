@@ -79,4 +79,37 @@ router.post('/single', upload.single("file"), async (req, res) => {
     }
 })
 
+router.post('/text', async (req, res) => {
+    console.log(req.body)
+    const inputUsername = req.body.username;
+    const inputPassword = req.body.password;
+    const text = req.body.text;
+
+    const docRef = doc(db, "users", inputUsername);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+        const data = docSnap.data();
+        const { password } = data;
+        const result = await bcrypt.compare(inputPassword, password)
+        if (result) {
+                    await updateDoc(docRef, {
+                        uploads: arrayUnion({
+                            text: text,
+                            uploader: inputUsername
+                        })
+                    })
+                .then(() => res.send (200))
+                .catch((e) => {
+                    console.log(e)
+                    res.sendStatus(500)
+                });
+        }
+        else {
+            res.sendStatus(403)
+        }
+    } else {
+        res.sendStatus(404)
+    }
+})
+
 export default router

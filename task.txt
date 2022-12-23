@@ -13,6 +13,7 @@ file upload done
 
 
 
-have to ask login state checker in homepage
+have to add login state checker in homepage
 populating user data left
 real-time listener left
+whitelist left
