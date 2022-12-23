@@ -4,6 +4,7 @@ const db = getFirestore()
 import express from "express"
 import bcrypt from 'bcrypt'
 import multer from "multer"
+import fs from 'fs'
 import { v2 as cloudinary } from 'cloudinary';
 
 const upload = multer({ dest: "uploads/" });
@@ -32,19 +33,19 @@ router.use((req, res, next) => {
 })
 
 
-router.get('/:id', async(req, res)=>{
+router.get('/:id', async (req, res) => {
     res.send('The id you specified is ' + req.params.id);
 
 })
 
 
 
-router.post('/single', upload.single("file"), async(req,res)=>{
+router.post('/single', upload.single("file"), async (req, res) => {
 
     const inputUsername = req.body.username;
     const inputPassword = req.body.password;
     let URL = '';
-    
+
     const docRef = doc(db, "users", inputUsername);
     const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
@@ -52,21 +53,24 @@ router.post('/single', upload.single("file"), async(req,res)=>{
         const { password } = data;
         const result = await bcrypt.compare(inputPassword, password)
         if (result) {
-            const imagePath = req.file.path
-            console.log(req.file)
-            await cloudinary.uploader.upload(imagePath, options).then((data)=>{console.log(data); URL=data.secure_url})
-            .then(async()=>{
-                await updateDoc(docRef,{
-                    uploads: arrayUnion({
-                        url: URL,
-                        uploader: inputUsername
-                    })  
-                }).then(()=>res.send(URL))
-            })
-            .catch((e)=>{
-                console.log(e)
-                res.sendStatus(500)
-            });
+            const filePath = req.file.path
+            await cloudinary.uploader.upload(filePath, options).then((data) => { URL = data.secure_url })
+                .then(async () => {
+                    await updateDoc(docRef, {
+                        uploads: arrayUnion({
+                            url: URL,
+                            uploader: inputUsername
+                        })
+                    })
+                })
+                .then(() =>fs.unlink(filePath, (err) => {
+                    if (err) throw err;
+                    res.send(URL)
+                }))
+                .catch((e) => {
+                    console.log(e)
+                    res.sendStatus(500)
+                });
         }
         else {
             res.sendStatus(403)

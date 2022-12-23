@@ -21,31 +21,34 @@ router.post('/:id', async(req, res)=>{
     if (docSnap.exists()) {
         const data = docSnap.data()
         const { password } = data;
-        // const result = await bcrypt.compare(inputPassword, password)
+        const result = await bcrypt.compare(inputPassword, password)
         const friendList = []
-        data.friends.map((friend)=>{
-            friendList.push(friend.username)
-        })
-        const friendAccess = friendList.includes(inputUsername)
-        const viewAccess = data.viewAccess == "public"
-        const uploadAccess = data.uploadAccess=="public"
-        if (false) {
+        let friendAccess = false
+        if(data.friends){
+            data.friends.map((friend)=>{
+                friendList.push(friend.username)
+            })
+            friendAccess = friendList.includes(inputUsername)
+        }
+        const viewAccess = data.viewAccess
+        const uploadAccess = data.uploadAccess
+        if (result) {
             await getDoc(docRef).then((data)=>res.json(data.data())).catch((e)=>console.log(e))
         }
         else if(friendAccess){
+            console.log("friend")
             await getDoc(docRef).then((data) => res.json(data.data())).catch((e) => console.log(e))
         }
-        } else if(true) {
-            console.log(1)
-            await getDoc(docRef).then((data) => res.json(data)).catch((e) => console.log(e))
+         else if(viewAccess=="public") {
+            await getDoc(docRef).then((data) => res.json(data.data())).catch((e) => console.log(e))
         }
-        else if(uploadAccess){
-            console.log(2)
+        else if(uploadAccess=="public"){
             res.json("Only upload access available")
         }
         else{
             res.sendStatus(403)
         }
+    }
 })
 
 

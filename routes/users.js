@@ -26,27 +26,25 @@ router.use((req, res, next) => {
 
 
 router.post('/create', async (req, res) => {
-    const { username, password, recoveryEmail, recoveryPhone } = req.body;
+    const { username, password } = req.body;
    
     const docRef = doc(db, "users", username);
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
-        res.sendStatus(403);
+        res.sendStatus(409);
     } else {
         const salt = bcrypt.genSaltSync(saltRounds);
         const hash = await bcrypt.hash(password, salt)
         await setDoc(doc(db, "users", username), {
             username:username,
             password:hash,
-            recoveryEmail:recoveryEmail||null,
-            recoveryPhone:recoveryPhone||null,
             viewAccess:"private",
             uploadAccess:"private",
             nsfw:"false"
 
         }).then(()=>{
-            res.send(200)
+            res.sendStatus(200)
         }).catch((e)=>{
             res.sendStatus(500)
         });
@@ -72,12 +70,11 @@ router.post('/login',async(req,res)=>{
         const {password} = data;
         const result = await bcrypt.compare(inputPassword, password)
         if(result){
-            res.send(200)
+            res.json({inputUsername, inputPassword})
         } 
         else{
             res.sendStatus(403)
         }
-
     }else{
         res.sendStatus(404)
     }
