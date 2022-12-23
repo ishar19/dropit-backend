@@ -39,9 +39,9 @@ router.post('/create', async (req, res) => {
         await setDoc(doc(db, "users", username), {
             username:username,
             password:hash,
-            viewAccess:"private",
-            uploadAccess:"private",
-            nsfw:"false"
+            viewAccess:false,
+            uploadAccess:false,
+            nsfw:false
 
         }).then(()=>{
             res.sendStatus(200)
@@ -91,6 +91,7 @@ router.post('/login',async(req,res)=>{
 
 router.post('/updateSettings',async(req,res)=>{
     const {viewAccess, uploadAccess, nsfwAccess} = req.body
+    console.log(viewAccess, uploadAccess, nsfwAccess)
     const inputUsername = req.body.username;
     const inputPassword = req.body.password;
     const docRef = doc(db, "users", inputUsername);

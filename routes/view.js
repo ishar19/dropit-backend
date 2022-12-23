@@ -39,10 +39,10 @@ router.post('/:id', async(req, res)=>{
             console.log("friend")
             await getDoc(docRef).then((data) => res.json(data.data())).catch((e) => console.log(e))
         }
-         else if(viewAccess=="public") {
+         else if(viewAccess==true) {
             await getDoc(docRef).then((data) => res.json(data.data())).catch((e) => console.log(e))
         }
-        else if(uploadAccess=="public"){
+        else if(uploadAccess==true){
             res.json("Only upload access available")
         }
         else{

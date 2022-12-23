@@ -1,7 +1,7 @@
 login api done
 create account api done
 fetching data is done
-
+setting updation is done 
 
 
 
