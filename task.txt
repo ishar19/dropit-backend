@@ -2,7 +2,7 @@ login api done
 create account api done
 fetching data is done
 setting updation is done 
-
+file upload done
 
 
 
@@ -15,3 +15,4 @@ setting updation is done
 
 have to ask login state checker in homepage
 populating user data left
+real-time listener left

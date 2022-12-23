@@ -41,7 +41,6 @@ router.get('/:id', async (req, res) => {
 
 
 router.post('/single', upload.single("file"), async (req, res) => {
-
     const inputUsername = req.body.username;
     const inputPassword = req.body.password;
     let URL = '';
